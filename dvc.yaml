@@ -1,0 +1,37 @@
+stages:
+  data_ingestion:
+    cmd: python src/anomaly_detection/pipeline/stage_01_data_ingestion.py
+    deps:
+      - src/anomaly_detection/pipeline/stage_01_data_ingestion.py
+      - config/config.yaml
+      - data_source/train_dns_attack.csv
+    outs:
+      - artifacts/mar07/data_ingestion
+
+  data_transformation:
+    cmd: python3 src/anomaly_detection/pipeline/stage_02_data_transformation.py
+    deps:
+      - src/anomaly_detection/pipeline/stage_02_data_transformation.py
+      - config/config.yaml
+      - artifacts/mar07/data_ingestion
+    outs:
+      - artifacts/mar07/data_transformation
+  
+  model_train:
+    cmd: python3 src/anomaly_detection/pipeline/stage_03_model_train.py
+    deps:
+      - src/anomaly_detection/pipeline/stage_03_model_train.py
+      - config/config.yaml
+      - artifacts/mar07/data_transformation
+    outs:
+      - artifacts/mar07/model_train
+  
+  model_test:
+    cmd: python3 src/anomaly_detection/pipeline/stage_04_model_test.py
+    deps:
+      - src/anomaly_detection/pipeline/stage_04_model_test.py
+      - config/config.yaml
+      - artifacts/mar07/model_train
+      - artifacts/mar07/data_transformation
+    outs:
+      - artifacts/mar07/model_test

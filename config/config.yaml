@@ -1,0 +1,46 @@
+artifacts_root: artifacts
+experiment_name: anomaly_detection
+
+data_ingestion:
+  root_dir: artifacts/mar07/data_ingestion
+  data_source_dir: data_source
+  train_data_file_name: train_dns_attack.csv
+  test_data_file_name: test_dns_attack.csv
+
+data_transformation:
+  root_dir: artifacts/mar07/data_transformation
+  data_source_dir: artifacts/mar07/data_ingestion
+  train_data_file_name: train_dns_attack.csv
+  test_data_file_name: test_dns_attack.csv
+  params: {}
+
+
+model_train:
+  root_dir: artifacts/mar07/model_train
+  data_source_dir: artifacts/mar07/data_transformation
+  train_data_file_name: train_bucket.csv
+  model_config : model_config.yaml
+  params: {}
+
+model_test:
+  root_dir: artifacts/mar07/model_test
+  data_source_dir: artifacts/mar07/data_transformation
+  test_bucket_data_file_name: test_bucket.csv
+  test_flat_bucket_data_file_name: test_flat_bucket.csv
+  model_pipeline_source_dir: artifacts/mar07/model_train
+  model_pipeline_file_name: model.joblib
+  predicted_label_file_name: predicted_label.csv
+  confusion_matrix_file_name: confusion_matrix.csv
+  params: {}
+
+# anomaly_report:
+#   root_dir: artifacts/mar07/anomaly_report
+#   data_source_dir: artifacts/mar07/data_transformation
+#   train_data_file_name: train_bucket.csv
+#   test_data_file_name: test_flatbucket.csv
+#   model_pipeline_source_dir: artifacts/mar07/model_train
+#   model_pipeline_file_name: model.joblib
+#   confusion_matrix_source_dir: artifacts/mar07/model_test
+#   predicted_df_file_name: predicted_label.csv
+#   confusion_matrix_file_name: confusion_matrix.csv
+#   params: {}  

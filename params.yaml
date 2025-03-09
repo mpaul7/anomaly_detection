@@ -1,0 +1,91 @@
+commands: 
+  train: python3 /home/mpaul/projects/mpaul/mai/anomly_detection/dns_attack_detection.py
+
+data_paths:
+  train_flat:
+    - '/home/mpaul/projects/mpaul/mai/data/dns/raw_data/train_cubro_pcap_00002375_July24-25.csv'
+  test_flat:
+    - '/home/mpaul/projects/mpaul/mai/data/dns/raw_data/test_cubro_solana_DNS_Reflection_Amplification-4GB_2024.csv'
+    # - '/home/mpaul/projects/mpaul/mai/data/dns/raw_data/impact.csv'
+    # - '/home/tw/projects/mai/data/dns/raw_data/test_cubro_solana_DNS_Amplification-2024.csv'
+
+settings:
+  attack_interval: 900
+  type: 'bucket'
+  bucket_size: 30
+  result_path: '/home/mpaul/projects/mpaul/mai/results'
+
+features:
+  bucket_target_features:
+  # 11, 7, 9
+    # - 'sum_pl_fwd_count' # 1
+    # - 'sum_pl_bwd_count' # 2
+    - 'pl_count_ratio' # 11
+    # - 'sum_pl_fwd_bytes' # 3
+    # - 'sum_pl_bwd_bytes' # 4  
+    # - 'sum_pl_fwd_flow_count' # 5
+    # - 'sum_pl_bwd_flow_count' # 6
+    # - 'pl_flow_fwd_bwd_byte_ratio_sum'
+    # - 'pl_flow_fwd_bwd_byte_ratio_avg'
+    # - 'pl_flow_bwd_fwd_byte_ratio' # 7
+    # - 'pl_flow_count_ratio' # 9
+    # - 'sum_pkt_per_sec' # 12
+    # - 'sum_pkt_bytes_per_sec' # 13
+    - 'avg_pl_fwd_count'
+    - 'avg_pl_bwd_count'
+    - 'avg_pl_fwd_bytes'
+    - 'avg_pl_bwd_bytes'
+    # - 'sum_pkt_fwd_count'
+    # - 'sum_pkt_bwd_count'
+    - 'pkt_count_ratio'
+    # - 'sum_pkt_fwd_bytes'
+    # - 'sum_pkt_bwd_bytes'
+    # - 'sum_pkt_fwd_flow_count'
+    # - 'sum_pkt_bwd_flow_count'
+    # - 'pkt_flow_fwd_bwd_byte_ratio_sum'
+    # - 'pkt_flow_fwd_bwd_byte_ratio_avg'
+    # - 'pkt_flow_bwd_fwd_byte_ratio'
+    - 'pkt_flow_count_ratio'
+    - 'avg_pkt_fwd_count'
+    - 'avg_pkt_bwd_count'
+    - 'avg_pkt_fwd_bytes'
+    - 'avg_pkt_bwd_bytes'
+
+  flat_target_features:
+    - 'pl_fwd_count'
+    - 'pl_len_fwd_total'
+    - 'pl_bwd_count'
+    - 'pl_len_bwd_total'
+    - 'pl_per_sec'
+    - 'pl_bytes_per_sec'
+    - 'pl_count_ratio'
+    - 'pl_bytes_ratio'
+    - 'pkt_fwd_count'
+    - 'pkt_len_fwd_total'
+    - 'pkt_bwd_count'
+    - 'pkt_len_bwd_total'
+    - 'pkt_per_sec'
+    - 'pkt_bytes_per_sec'
+    - 'pkt_count_ratio'
+    - 'pkt_bytes_ratio'
+
+  target_labels:
+    - 'dns'
+    - 'dns_attack'
+
+pipeline:
+  steps:
+    - name: scaler
+      class: MinMaxScaler
+    - name: iso_forest
+      class: IsolationForest
+      params:
+        random_state: 42
+        # contamination: 0.1
+
+param_grid:
+  iso_forest__n_estimators: [100, 200, 300, 400, 500]
+  iso_forest__contamination: [0.01, 0.05, 0.1]
+  iso_forest__max_samples: ['auto']
+  iso_forest__max_features: [1, 0.5, 'auto']
+

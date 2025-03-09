@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DNS Attack Detection Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 40px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .metric-box {
+            background-color: #f8f9fa;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        .plot-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .plot-container img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>DNS Attack Detection Analysis Report</h1>
+    <p>Generated on: {{ summary.timestamp }}</p>
+
+    <div class="section">
+        <h2>Summary</h2>
+        <div class="metric-box">
+            <h3>Overall Accuracy</h3>
+            <p>{{ summary.accuracy }}</p>
+        </div>
+        <div class="metric-box">
+            <h3>Attack Detection Rate</h3>
+            <p>{{ summary.attack_detection_rate }}</p>
+        </div>
+        <div class="metric-box">
+            <h3>Total Samples</h3>
+            <p>{{ summary.total_samples }}</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Dataset Overview</h2>
+        <h3>Training Data</h3>
+        <p>Total samples: {{ dataset_summary.training.total_samples }}</p>
+        <p>Features used: {{ dataset_summary.training.features }}</p>
+        <p>Features names:</p>
+        <ol>
+            {% for feature in dataset_summary.training.feature_names %}
+            <li>{{ feature }}</li>
+            {% endfor %}
+        </ol>
+        <h3>Testing Data</h3>
+        <p>Total samples: {{ dataset_summary.testing.total_samples }}</p>
+    </div>
+
+    <div class="section">
+        <h2>Model Configuration</h2>
+        <h3>Model Type: {{ model_configuration.type }}</h3>
+        <table>
+            <tr>
+                <th>Parameter</th>
+                <th>Value</th>
+            </tr>
+            {% for key, value in model_configuration.parameters.items() %}
+            <tr>
+                <td>{{ key }}</td>
+                <td>{{ value }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <h2>Model Performance</h2>
+    <div class="confusion-matrix">
+        <h3>Confusion Matrix Report</h3>
+        {{ confusion_matrix_report }}
+    </div>
+    <div class="section">
+        <h2>Performance Metrics</h2>
+        <p>ROC AUC Score: {{ performance_metrics.roc_auc }}</p>
+        <p>Average Precision: {{ performance_metrics.average_precision }}</p>
+        <div class="plot-container">
+            <img src="data:image/png;base64,{{ performance_metrics.roc_plot }}" alt="ROC Curve">
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Anomaly Score Analysis</h2>
+        <div class="plot-container">
+            <img src="data:image/png;base64,{{ anomaly_analysis.distribution_plot }}" alt="Anomaly Score Distribution">
+        </div>
+    </div>
+    <div class="section">
+        <h2>Anomaly Score Distribution</h2>
+        <div class="plot-container">
+            <img src="data:image/png;base64,{{ anomaly_distribution.distribution_plot }}" alt="Anomaly Score Distribution">
+        </div>
+    </div>
+    <div class="section">
+        <h2>Feature Boxplots</h2>
+        <div class="plot-container">
+            {% for feature, plot in feature_boxplots.items() %}
+            <h3>{{ feature }}</h3>
+            <img src="data:image/png;base64,{{ plot }}" alt="Boxplot of {{ feature }}">
+            {% endfor %}
+        </div>
+    </div>
+    <div class="section">
+        <h2>Feature Distributions</h2>
+        <div class="plot-container">
+            {% for feature, plot in feature_distributions.items() %}
+            <h3>{{ feature }}</h3>
+            <img src="data:image/png;base64,{{ plot }}" alt="Distribution of {{ feature }}">
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
