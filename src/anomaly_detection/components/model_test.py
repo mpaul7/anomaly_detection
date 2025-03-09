@@ -5,20 +5,15 @@ warnings.filterwarnings("ignore", category=UserWarning)
 warnings.filterwarnings("ignore", category=RuntimeWarning)
 
 import os
-import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
+import pandas as pd
 from datetime import datetime
 
-from sklearn.metrics import confusion_matrix, classification_report, accuracy_score
-
-from pathlib import Path
-from anomaly_detection import logger
-from anomaly_detection.entity.config_entity import ModelTestConfig
+from sklearn.metrics import confusion_matrix
 
 from anomaly_detection.utils.common import *
 from anomaly_detection.utils.classification_report import *
+from anomaly_detection.entity.config_entity import ModelTestConfig
 from anomaly_detection.components.anomaly_report import DNSAttackModelReport
 class ModelTest:
     
